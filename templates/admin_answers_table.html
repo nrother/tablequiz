@@ -1,0 +1,33 @@
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Frage</th>
+            <th>Team</th>
+            <th>Antwort</th>
+            <th>Bewertung</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sq in active_question.subquestions %}
+        {% set outer_loop = loop %}
+            {% for team in teams %}
+            <tr class="{{ "border-bottom border-dark" if loop.last and not outer_loop.last}}">
+                <td>{{ sq.question }}</td>
+                <td>{{ team }}</td>
+                <td>{{ answers[active_question.id][team][outer_loop.index0].answer or '&mdash;'|safe }}</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Bewertung">
+                        {% for rating in range(3) %}
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary{% if answers[active_question.id][team][outer_loop.index0].rating == rating %} active{% endif %}"
+                                onclick="setRating('{{ team }}', {{ active_question.id }}, {{ outer_loop.index0 }}, {{ rating }})">
+                            {{ rating }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>

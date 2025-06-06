@@ -1,0 +1,26 @@
+<div class="question-block">
+    <h2>{{ question.text }}</h2>
+
+    <form id="question_form" action="{{ url_for('submit_answer') }}" method="post">
+        {% for sq in question.subquestions %}
+            <div class="mb-3">
+                <label for="answer-{{ loop.index0 }}" class="form-label">{{ sq.question }}</label>
+                {% if question.type == 'number' %}
+                    <input type="number" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
+                {% elif question.type == 'text' %}
+                    <input type="text" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
+                {% elif question.type == 'multiple_choice' %}
+                    {% set rowloop = loop %}
+                    {% for option in sq.options %}
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="answer-{{ rowloop.index0 }}-{{ loop.index0 }}" name="answer-{{ rowloop.index0 }}" value="{{ option }}">
+                            <label class="form-check-label" for="answer-{{ rowloop.index0 }}-{{ loop.index0 }}">{{ option }}</label>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <br>
+        <button class="btn btn-primary" type="submit">Absenden</button>
+    </form>
+</div>

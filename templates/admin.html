@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h2>Admin Panel</h2>
+<form method="post" action="{{ url_for('set_active_question') }}">
+    <div class="mb-3">
+        <label for="question_id" class="form-label">Aktive Frage</label>
+        <select class="form-select" id="question_id" name="question_id" required>
+            {% for q in questions %}
+                <option value="{{ q.id }}" {% if q.id == active_question.id %}selected{% endif %}>{{ q.text }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Frage auswählen</button>
+</form>
+<form method="post" action="{{ url_for('set_active_question') }}">
+    <input type="hidden" name="question_id" value="{{ active_question.id - 1}}">
+    <button type="submit" class="btn btn-secondary">Zurück</button>
+</form>
+<form method="post" action="{{ url_for('set_active_question') }}">
+    <input type="hidden" name="question_id" value="{{ active_question.id + 1}}">
+    <button type="submit" class="btn btn-secondary">Vor</button>
+</form>
+
+<div id="answers_table_container">
+    <!-- Answers table will be loaded here via AJAX -->
+</div>
+
+<a href="{{ url_for('admin_logout') }}" class="mt-4">Admin Logout</a>
+
+<script>
+function loadAnswersTable() {
+    fetch('{{ url_for("admin_answers_table") }}')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('answers_table_container').innerHTML = html;
+        });
+}
+
+// Initial load
+window.addEventListener('DOMContentLoaded', loadAnswersTable);
+
+// WebSocket for live updates
+const socket = new WebSocket(`ws://${window.location.host}/ws`);
+socket.onmessage = function(msg) {
+    const data = JSON.parse(msg.data);
+    if (data.msg === 'answers_updated') {
+        loadAnswersTable();
+    }
+};
+socket.onclose = function(event) {
+    wsError(event);
+};
+socket.onerror = function(error) {
+    wsError(error);
+};
+
+function wsError(error) {
+    console.error('WebSocket error:', error);
+    document.getElementById('answers_table_container').innerHTML = "Fehler beim Verbinden zum Server. Bitte aktualisiere die Seite.";
+}
+
+function setRating(team, question_id, subq_idx, rating) {
+    fetch('{{ url_for("set_rating") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            team: team,
+            question_id: question_id,
+            subq_idx: subq_idx,
+            rating: rating
+        })
+    }).then(res => {
+        if (res.ok) {
+            // Reload the answers table
+            window.loadAnswersTable();
+        }
+    });
+}
+</script>
+{% endblock %}

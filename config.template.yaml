@@ -1,0 +1,7 @@
+secret_key: "replace_with_your_secret_key"
+admin_password: "replace_with_admin_password"
+teams:
+    - Team 1
+    - Team 2
+    - Team 3
+    # Add more teams as needed

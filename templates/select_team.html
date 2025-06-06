@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Team wählen{% endblock %}
+{% block content %}
+<h1>Team auswählen</h1>
+{% for team in teams %}
+    <form action="{{ url_for('select_team') }}" method="post">
+        <input type="hidden" name="team" value="{{ team }}">
+        <button type="submit" class="btn btn-primary mb-2">{{ team }}</button>
+    </form>
+{% endfor %}
+{% endblock %}
