@@ -16,7 +16,7 @@
                 <td>{{ team }}</td>
                 <td>
                     {{ answers[active_question.id][team][outer_loop.index0].answer or '&mdash;'|safe }}
-                    {% if active_question.type == 'number' %}
+                    {% if active_question.type in ['number', 'time'] %}
                         {% if answers[active_question.id][team][outer_loop.index0].answer %}
                             {% set diff = ((answers[active_question.id][team][outer_loop.index0].answer - sq.answer) / sq.answer * 100) | round(1) %}
                             {% set color = "text-secondary" %}

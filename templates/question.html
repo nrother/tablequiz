@@ -17,6 +17,8 @@
                             <label class="form-check-label" for="answer-{{ rowloop.index0 }}-{{ loop.index0 }}">{{ option }}</label>
                         </div>
                     {% endfor %}
+                {% elif question.type == 'time' %}
+                    <input type="time" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required step="1">
                 {% endif %}
             </div>
         {% endfor %}

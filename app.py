@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 import yaml
 import flask_sock
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 ws = flask_sock.Sock(app)
@@ -76,6 +77,17 @@ def submit_answer():
                 answer = float(answer)
             except ValueError:
                 raise ValueError(f"Invalid number format for subquestion {idx}.")
+        elif active_question['type'] == 'time':
+            # Parse as seconds since midnight
+            answer = answer.strip()
+            try:
+                t = datetime.strptime(answer, "%H:%M:%S")
+            except ValueError:
+                try:
+                    t = datetime.strptime(answer, "%H:%M")
+                except ValueError:
+                    raise ValueError(f"Invalid time format for subquestion {idx}.")
+            answer = t.hour * 3600 + t.minute * 60 + t.second
         answers_data[active_question_id][team][idx]['answer'] = answer
 
         # Automtic rating
@@ -87,15 +99,22 @@ def submit_answer():
                 answers_data[active_question_id][team][idx]['rating'] = 0
         elif active_question['type'] == 'number':
             assert type(answer) is float
-            try:
-                correct_value = sq['answer']
-                if abs(answer - correct_value) / correct_value <= config['two_point_cutoff']:
-                    answers_data[active_question_id][team][idx]['rating'] = 2
-                elif abs(answer - correct_value) / correct_value <= config['one_point_cutoff']:
-                    answers_data[active_question_id][team][idx]['rating'] = 1
-                else:
-                    answers_data[active_question_id][team][idx]['rating'] = 0
-            except ValueError:
+            correct_value = sq['answer']
+            if abs(answer - correct_value) / correct_value <= config['two_point_cutoff']:
+                answers_data[active_question_id][team][idx]['rating'] = 2
+            elif abs(answer - correct_value) / correct_value <= config['one_point_cutoff']:
+                answers_data[active_question_id][team][idx]['rating'] = 1
+            else:
+                answers_data[active_question_id][team][idx]['rating'] = 0
+        elif active_question['type'] == 'time':
+            assert type(answer) is int
+            # use seconds
+            correct_value = sq['answer']
+            if abs(answer - correct_value) / correct_value <= config['two_point_cutoff']:
+                answers_data[active_question_id][team][idx]['rating'] = 2
+            elif abs(answer - correct_value) / correct_value <= config['one_point_cutoff']:
+                answers_data[active_question_id][team][idx]['rating'] = 1
+            else:
                 answers_data[active_question_id][team][idx]['rating'] = 0
 
     # Save the updated answers data to the file
