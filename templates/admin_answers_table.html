@@ -1,3 +1,11 @@
+
+Korrekte Antworten:
+<ul>
+    {% for sq in active_question.subquestions %}
+    <li>{{ sq.question }}: {{ sq.answer }}</li>
+    {% endfor %}
+</ul>
+
 <table class="table table-striped mt-4">
     <thead>
         <tr>
