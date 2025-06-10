@@ -36,6 +36,7 @@ socket.onmessage = function(msg) {
     console.log('WebSocket message received:', msg);
     const data = JSON.parse(msg.data);
     switch (data.msg) {
+        case 'allow_answers_changed':
         case 'active_question_changed':
             document.getElementById('question_box').innerHTML = data.html;
             loadActiveQuestion();

@@ -27,6 +27,7 @@ for question in quiz_data['questions']:
         answers_data[question['id']] = {team: {sqid: {'answer': None, 'rating': 0} for sqid in range(len(question['subquestions']))} for team in config['teams']}
 
 active_question_id = 1
+allow_answers = True  # Fixed typo from allow_ansers
 ws_clients = []
 
 def send_to_all_clients(message):
@@ -64,6 +65,8 @@ def submit_answer():
     active_question = next((q for q in quiz_data['questions'] if q['id'] == active_question_id), None)
     if not active_question:
         raise ValueError("No active question found.")
+    if not allow_answers:
+        raise ValueError("Answers are not allowed at the moment.")
     
     for idx, sq in enumerate(active_question['subquestions']): # TODO: Subquestions should have an ID
         # TODO: The data model for answers is bad
@@ -127,11 +130,20 @@ def submit_answer():
 
     return redirect(url_for('contestant'))
 
+@app.route('/admin/set_allow_answers', methods=['POST'])
+def set_allow_answers():
+    if not session.get('admin_logged_in'):
+        return ('', 403)
+    global allow_answers
+    allow_answers = request.form.get('allow_answers', 'false').lower() == 'true'
+    send_to_all_clients({'msg': 'allow_answers_changed', 'allow_answers': allow_answers})
+    return redirect(url_for('admin'))
+
 @app.route('/get_active_question')
 def get_active_question():
     question = next((q for q in quiz_data['questions'] if q['id'] == active_question_id), None)
     if question:
-        return render_template('question.html', question=question)
+        return render_template('question.html', question=question, allow_answers=allow_answers)
     else:
         return ('Question not found', 404)
 
@@ -162,6 +174,7 @@ def admin():
                            active_question=next((q for q in quiz_data['questions'] if q['id'] == active_question_id)),
                            teams=config['teams'],
                            answers=answers_data,
+                           allow_answers=allow_answers,
                            )
 
 @app.route('/admin/answers_table')

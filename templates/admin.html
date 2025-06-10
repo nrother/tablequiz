@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-<h2>Admin Panel</h2><a href="{{ url_for('admin_logout') }}" class="">Logout</a>
+<h2>Admin Panel</h2>
+<div class="mb-3">
+    <a href="{{ url_for('admin_logout') }}">Logout</a>
+</div>
+
+<div class="mb-3">
+    <form method="post" action="{{ url_for('set_allow_answers') }}">
+        <input type="hidden" name="allow_answers" value="{{ not allow_answers }}">
+        <button type="submit" class="btn btn-warning">
+            {% if allow_answers %}
+                Antworten sperren
+            {% else %}
+                Antworten erlauben
+            {% endif %}
+        </button>
+        <span id="allow-answers-status" class="ms-2">
+            {% if allow_answers %}
+                <span class="text-success">Antworten erlaubt</span>
+            {% else %}
+                <span class="text-danger">Antworten gesperrt</span>
+            {% endif %}
+        </span>
+    </form>
+</div>
 
 <form id="select-question-form" method="post" action="{{ url_for('set_active_question') }}">
     <div class="input-group mt-3 mb-3">

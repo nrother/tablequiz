@@ -1,28 +1,33 @@
 <div class="question-block">
-    <h2>{{ question.text }}</h2>
+    {% if allow_answers %}
+        <h2>{{ question.text }}</h2>
 
-    <form id="question_form" action="{{ url_for('submit_answer') }}" method="post">
-        {% for sq in question.subquestions %}
-            <div class="mb-3">
-                <label for="answer-{{ loop.index0 }}" class="form-label">{{ sq.question }}</label>
-                {% if question.type == 'number' %}
-                    <input type="number" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
-                {% elif question.type == 'text' %}
-                    <input type="text" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
-                {% elif question.type == 'single_choice' %}
-                    {% set rowloop = loop %}
-                    {% for option in sq.options %}
-                        <div class="form-check">
-                            <input type="radio" class="form-check-input" id="answer-{{ rowloop.index0 }}-{{ loop.index0 }}" name="answer-{{ rowloop.index0 }}" value="{{ option }}">
-                            <label class="form-check-label" for="answer-{{ rowloop.index0 }}-{{ loop.index0 }}">{{ option }}</label>
-                        </div>
-                    {% endfor %}
-                {% elif question.type == 'time' %}
-                    <input type="time" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required step="1">
-                {% endif %}
-            </div>
-        {% endfor %}
-        <br>
-        <button class="btn btn-primary" type="submit">Absenden</button>
-    </form>
+        <form id="question_form" action="{{ url_for('submit_answer') }}" method="post">
+            {% for sq in question.subquestions %}
+                <div class="mb-3">
+                    <label for="answer-{{ loop.index0 }}" class="form-label">{{ sq.question }}</label>
+                    {% if question.type == 'number' %}
+                        <input type="number" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
+                    {% elif question.type == 'text' %}
+                        <input type="text" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
+                    {% elif question.type == 'single_choice' %}
+                        {% set rowloop = loop %}
+                        {% for option in sq.options %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="answer-{{ rowloop.index0 }}-{{ loop.index0 }}" name="answer-{{ rowloop.index0 }}" value="{{ option }}">
+                                <label class="form-check-label" for="answer-{{ rowloop.index0 }}-{{ loop.index0 }}">{{ option }}</label>
+                            </div>
+                        {% endfor %}
+                    {% elif question.type == 'time' %}
+                        <input type="time" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required step="1">
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <br>
+            <button class="btn btn-primary" type="submit">Absenden</button>
+        </form>
+    {% else %}
+        <h2>Keine aktive Frage</h2>
+        <p>Es gibt derzeit keine aktive Frage. Bitte warten Sie auf die nächste Frage.</p>
+    {% endif %}
 </div>
