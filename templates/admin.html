@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-<h2>Admin Panel</h2>
-<form method="post" action="{{ url_for('set_active_question') }}">
-    <div class="mb-3">
-        <label for="question_id" class="form-label">Aktive Frage</label>
+<h2>Admin Panel</h2><a href="{{ url_for('admin_logout') }}" class="">Logout</a>
+
+<form id="select-question-form" method="post" action="{{ url_for('set_active_question') }}">
+    <div class="input-group mt-3 mb-3">
+        <button form="prev-question-form" type="submit" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+        </button>
         <select class="form-select" id="question_id" name="question_id" required>
             {% for q in questions %}
                 <option value="{{ q.id }}" {% if q.id == active_question.id %}selected{% endif %}>{{ q.text }}</option>
             {% endfor %}
         </select>
+        <button type="submit" class="btn btn-primary">Ok</button>
+        <button form="next-question-form" type="submit" class="btn btn-secondary">
+            <i class="bi bi-arrow-right"></i>
+        </button>
     </div>
-    <button type="submit" class="btn btn-primary">Frage auswählen</button>
+    </div>
 </form>
-<form method="post" action="{{ url_for('set_active_question') }}">
+<form id="prev-question-form" method="post" action="{{ url_for('set_active_question') }}">
     <input type="hidden" name="question_id" value="{{ active_question.id - 1}}">
-    <button type="submit" class="btn btn-secondary">Zurück</button>
 </form>
-<form method="post" action="{{ url_for('set_active_question') }}">
+<form id="next-question-form" method="post" action="{{ url_for('set_active_question') }}">
     <input type="hidden" name="question_id" value="{{ active_question.id + 1}}">
-    <button type="submit" class="btn btn-secondary">Vor</button>
 </form>
 
 <div id="answers_table_container">
@@ -27,7 +32,6 @@
 </div>
 
 <a href="{{ url_for('admin_scores') }}" class="btn btn-info mt-4">Gesamtwertung anzeigen</a>
-<a href="{{ url_for('admin_logout') }}" class="mt-4 ms-3">Admin Logout</a>
 
 <script>
 function loadAnswersTable() {
