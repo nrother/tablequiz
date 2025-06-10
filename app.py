@@ -71,7 +71,32 @@ def submit_answer():
             raise ValueError(f"Answer for subquestion {idx} is missing.")
         
         # Store the answer in answers_data
+        if active_question['type'] == 'number':
+            try:
+                answer = float(answer)
+            except ValueError:
+                raise ValueError(f"Invalid number format for subquestion {idx}.")
         answers_data[active_question_id][team][idx]['answer'] = answer
+
+        # Automtic rating
+        if active_question['type'] == 'text':
+            assert type(answer) is str
+            if answer.strip().lower() == sq['answer'].strip().lower():
+                answers_data[active_question_id][team][idx]['rating'] = 1
+            else:
+                answers_data[active_question_id][team][idx]['rating'] = 0
+        elif active_question['type'] == 'number':
+            assert type(answer) is float
+            try:
+                correct_value = sq['answer']
+                if abs(answer - correct_value) / correct_value <= config['two_point_cutoff']:
+                    answers_data[active_question_id][team][idx]['rating'] = 2
+                elif abs(answer - correct_value) / correct_value <= config['one_point_cutoff']:
+                    answers_data[active_question_id][team][idx]['rating'] = 1
+                else:
+                    answers_data[active_question_id][team][idx]['rating'] = 0
+            except ValueError:
+                answers_data[active_question_id][team][idx]['rating'] = 0
 
     # Save the updated answers data to the file
     update_answers_file()
@@ -97,7 +122,7 @@ def admin_login():
         password = request.form.get('password')
         if password == config['admin_password']:
             session['admin_logged_in'] = True
-            flash('Admin Bereich freigeschaltet.', 'success')
+            flash('Admin-Bereich freigeschaltet.', 'success')
             return redirect(url_for('admin'))
         else:
             flash('Falsches Passwort.', 'danger')
