@@ -13,12 +13,4 @@ questions:
       - question: "Example subquestion"
         answer: "Your answer here"
 
-  - id: 3
-    type: order
-    text: "Order these items by size"
-    subquestions:
-      - question: "Items"
-        options: ["Item A", "Item B", "Item C"]
-        answer: ["Item B", "Item A", "Item C"]
-
   # Add more questions as needed, following the same structure
