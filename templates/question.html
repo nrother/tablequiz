@@ -9,11 +9,11 @@
                     <input type="number" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
                 {% elif question.type == 'text' %}
                     <input type="text" class="form-control" id="answer-{{ loop.index0 }}" name="answer-{{ loop.index0 }}" required>
-                {% elif question.type == 'multiple_choice' %}
+                {% elif question.type == 'single_choice' %}
                     {% set rowloop = loop %}
                     {% for option in sq.options %}
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="answer-{{ rowloop.index0 }}-{{ loop.index0 }}" name="answer-{{ rowloop.index0 }}" value="{{ option }}">
+                            <input type="radio" class="form-check-input" id="answer-{{ rowloop.index0 }}-{{ loop.index0 }}" name="answer-{{ rowloop.index0 }}" value="{{ option }}">
                             <label class="form-check-label" for="answer-{{ rowloop.index0 }}-{{ loop.index0 }}">{{ option }}</label>
                         </div>
                     {% endfor %}

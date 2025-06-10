@@ -91,7 +91,7 @@ def submit_answer():
         answers_data[active_question_id][team][idx]['answer'] = answer
 
         # Automtic rating
-        if active_question['type'] == 'text':
+        if active_question['type'] in ['text', 'single_choice']:
             assert type(answer) is str
             if answer.strip().lower() == sq['answer'].strip().lower():
                 answers_data[active_question_id][team][idx]['rating'] = 1
