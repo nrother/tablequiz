@@ -26,7 +26,8 @@
     <!-- Answers table will be loaded here via AJAX -->
 </div>
 
-<a href="{{ url_for('admin_logout') }}" class="mt-4">Admin Logout</a>
+<a href="{{ url_for('admin_scores') }}" class="btn btn-info mt-4">Gesamtwertung anzeigen</a>
+<a href="{{ url_for('admin_logout') }}" class="mt-4 ms-3">Admin Logout</a>
 
 <script>
 function loadAnswersTable() {

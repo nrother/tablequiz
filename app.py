@@ -182,6 +182,43 @@ def set_rating():
     send_to_all_clients({'msg': 'answers_updated', 'question_id': question_id})
     return ('', 204)
 
+@app.route('/admin/scores')
+def admin_scores():
+    if not session.get('admin_logged_in'):
+        return ('', 403)
+    # Prepare data for the scores table
+    teams = config['teams']
+    questions = quiz_data['questions']
+    # Build a list of all (question_id, subq_idx) pairs for columns
+    subq_columns = []
+    for q in questions:
+        for subq_idx, sq in enumerate(q['subquestions']):
+            subq_columns.append({
+                'question_id': q['id'],
+                'subq_idx': subq_idx,
+                'question_text': q['text'],
+                'subquestion_text': sq['question']
+            })
+    # Build a dict: team -> [ratings per subq], and total
+    team_scores = {}
+    for team in teams:
+        ratings = []
+        total = 0
+        for col in subq_columns:
+            qid = col['question_id']
+            sqidx = col['subq_idx']
+            rating = 0
+            rating = answers_data[qid][team][sqidx]['rating']
+            ratings.append(rating)
+            total += rating
+        team_scores[team] = {'ratings': ratings, 'total': total}
+    # Sort teams by total score descending
+    sorted_team_scores = sorted(team_scores.items(), key=lambda x: x[1]['total'], reverse=True)
+    return render_template('admin_scores.html',
+                           teams=[team for team, _ in sorted_team_scores],
+                           subq_columns=subq_columns,
+                           team_scores=dict(sorted_team_scores))
+
 @ws.route('/ws')
 def websocket(ws):
     ws_clients.append(ws)

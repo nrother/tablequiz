@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Admin Scores{% endblock %}
+{% block content %}
+<h2>Gesamtwertung</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Team</th>
+            {% for col in subq_columns %}
+                <th>
+                    {{ col.question_id }}.{{ col.subq_idx + 1 }}
+                </th>
+            {% endfor %}
+            <th>Gesamt</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in teams %}
+        <tr>
+            <td><b>{{ team }}</b></td>
+            {% for rating in team_scores[team].ratings %}
+                <td class="text-center">{{ rating }}</td>
+            {% endfor %}
+            <td class="fw-bold text-center">{{ team_scores[team].total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('admin') }}" class="btn btn-secondary mt-3">Zurück zum Admin Panel</a>
+{% endblock %}
