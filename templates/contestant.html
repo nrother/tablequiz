@@ -5,12 +5,6 @@
 <div id="question_box"></div>
 
 <script>
-let contestantId = localStorage.getItem('contestantId');
-if (!contestantId) {
-    contestantId = crypto.randomUUID();
-    localStorage.setItem('contestantId', contestantId);
-}
-
 function loadActiveQuestion() {
     fetch('/get_active_question')
         .then(res => {
