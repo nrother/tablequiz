@@ -7,6 +7,7 @@ from datetime import datetime
 app = Flask(__name__)
 ws = flask_sock.Sock(app)
 
+# Load config
 with open('config.yaml', 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
@@ -24,7 +25,7 @@ except FileNotFoundError:
 # Ensure answers_data is a dictionary with question IDs as keys
 for question in quiz_data['questions']:
     if question['id'] not in answers_data:
-        answers_data[question['id']] = {team: {sqid: {'answer': None, 'rating': 0} for sqid in range(len(question['subquestions']))} for team in config['teams']}
+        answers_data[question['id']] = {team: {sqid: {'answer': None, 'rating': 0} for sqid in range(len(question['subquestions']))} for team in config['teams'].keys()}
 
 active_question_id = 1
 allow_answers = True  # Fixed typo from allow_ansers
@@ -38,18 +39,19 @@ def send_to_all_clients(message):
 def index():
     return redirect(url_for('contestant'))
 
-@app.route('/select_team', methods=['GET', 'POST'])
-def select_team():
-    if request.method == 'POST':
-        team = request.form['team']
-        session['team'] = team
-        return redirect(url_for('contestant'))
-    return render_template('select_team.html', teams=config['teams'])
+@app.route('/join/<team_key>')
+def join_team(team_key):
+    team = next((t for t,k in config['teams'].items() if k == team_key), None)
+    if not team:
+        return ('Team not found.', 404)
+    session['team'] = team
+    flash(f'Du bist jetzt im Team: {team}', 'success')
+    return redirect(url_for('contestant'))
 
 @app.route('/contestant')
 def contestant():
     if 'team' not in session:
-        return redirect(url_for('select_team'))
+        return ('Not in a team.', 403)
     return render_template('contestant.html')
 
 def update_answers_file():

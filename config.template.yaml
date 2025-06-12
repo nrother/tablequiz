@@ -2,8 +2,9 @@ secret_key: "replace_with_your_secret_key"
 admin_password: "replace_with_admin_password"
 two_point_cutoff: 0.1 # Derivation from the correct answer to get 2 points
 one_point_cutoff: 0.2 # Derivation from the correct answer to get 1 point
-teams:
-    - Team 1
-    - Team 2
-    - Team 3
+teams: # keys are used for joining URLs
+    Team 1: "secretkey1"
+    Team 2: "secretkey2"
+    Team 3: "secretkey3"
     # Add more teams as needed
+    # Use unique, unguessable keys for each team!
