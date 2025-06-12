@@ -24,7 +24,7 @@ function loadActiveQuestion() {
 // On page load, try to load the current question
 window.addEventListener('DOMContentLoaded', loadActiveQuestion);
 // Connect to the WebSocket server
-const socket = new WebSocket(`ws://${window.location.host}/ws`);
+const socket = new WebSocket('/ws');
 
 socket.onmessage = function(msg) {
     console.log('WebSocket message received:', msg);
