@@ -1,6 +1,6 @@
 __pycache__/
 .venv/
 *.pyc
-answers.yaml
-config.yaml
-quiz.yaml
+data/answers.yaml
+data/config.yaml
+data/quiz.yaml

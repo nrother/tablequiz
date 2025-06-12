@@ -8,16 +8,16 @@ app = Flask(__name__)
 ws = flask_sock.Sock(app)
 
 # Load config
-with open('config.yaml', 'r', encoding='utf-8') as f:
+with open('data/config.yaml', 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
 app.config['SECRET_KEY'] = config['secret_key']
 
-with open('quiz.yaml', 'r', encoding="utf-8") as f:
+with open('data/quiz.yaml', 'r', encoding="utf-8") as f:
     quiz_data = yaml.safe_load(f)
 
 try:
-    with open('answers.yaml', 'r', encoding="utf-8") as f:
+    with open('data/answers.yaml', 'r', encoding="utf-8") as f:
         answers_data = yaml.safe_load(f)
 except FileNotFoundError:
     print("Answers file not found, initializing empty answers data.")
@@ -55,7 +55,7 @@ def contestant():
     return render_template('contestant.html')
 
 def update_answers_file():
-    with open('answers.yaml', 'w', encoding='utf-8') as f:
+    with open('data/answers.yaml', 'w', encoding='utf-8') as f:
         yaml.safe_dump(answers_data, f, allow_unicode=True)
 
 @app.route('/submit_answer', methods=['POST'])

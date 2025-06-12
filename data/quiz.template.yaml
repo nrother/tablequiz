@@ -1,0 +1,34 @@
+questions:
+  - id: 1
+    type: number
+    text: "Example number question?"
+    subquestions:
+      - question: "Example subquestion"
+        answer: 0
+
+  - id: 2
+    type: text
+    text: "Example text question?"
+    subquestions:
+      - question: "Example subquestion"
+        answer: "Your answer here"
+
+  - id: 3
+      type: single_choice
+      text: "Example single choice question?"
+      subquestions:
+        - question: "Example subquestion"
+          options:
+            - "Option A"
+            - "Option B"
+            - "Option C"
+          answer: "Option A"
+
+  - id: 4
+    type: time
+    text: "Example time question?"
+    subquestions:
+      - question: "Example subquestion"
+        answer: "42" # seconds
+
+  # Add more questions as needed, following the same structure
