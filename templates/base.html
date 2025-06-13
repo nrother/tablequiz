@@ -10,12 +10,20 @@
  <body class="container mt-4">
     {% set flashed_messages = get_flashed_messages(with_categories=True) %}
     {% for category, message in flashed_messages %}
-      <div class="alert alert-{{ category }}">
+      <div class="alert alert-{{ category }} fade show" role="alert" style="transition: opacity 0.5s;">
         {{ message }}
       </div>
     {% endfor %}
     {% block content %}{% endblock %}
     <p class="mt-4">Aktuelles Team: {{ session['team'] or "?"}}</p>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script>
+      setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+          bootstrap.Alert.getOrCreateInstance(alert).close();
+        });
+      }, 3000);
+    </script>
   </body>
 </html>
