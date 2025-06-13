@@ -24,7 +24,11 @@ function loadActiveQuestion() {
 // On page load, try to load the current question
 window.addEventListener('DOMContentLoaded', loadActiveQuestion);
 // Connect to the WebSocket server
-const socket = new WebSocket('/ws');
+// Use the current path to build the correct WebSocket URL
+const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+// Remove anything after the last slash in the path to get the base path
+const basePath = window.location.pathname.replace(/\/[^\/]*$/, '/');
+const socket = new WebSocket(wsProtocol + window.location.host + basePath + 'ws');
 
 socket.onmessage = function(msg) {
     console.log('WebSocket message received:', msg);
