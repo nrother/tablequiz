@@ -94,6 +94,8 @@ function wsError(error) {
 }
 
 function setRating(team, question_id, subq_idx, rating) {
+    event.target.disabled = true;
+    event.target.classList.add('fw-bold');
     fetch('{{ url_for("set_rating") }}', {
         method: 'POST',
         headers: {
