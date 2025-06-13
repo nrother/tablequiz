@@ -79,7 +79,7 @@ def submit_answer():
         # Store the answer in answers_data
         if active_question['type'] == 'number':
             try:
-                answer = float(answer)
+                answer = int(answer)
             except ValueError:
                 raise ValueError(f"Invalid number format for subquestion {idx}.")
         elif active_question['type'] == 'time':
@@ -103,7 +103,7 @@ def submit_answer():
             else:
                 answers_data[active_question_id][team][idx]['rating'] = 0
         elif active_question['type'] == 'number':
-            assert type(answer) is float
+            assert type(answer) is int
             correct_value = sq['answer']
             if abs(answer - correct_value) / correct_value <= config['two_point_cutoff']:
                 answers_data[active_question_id][team][idx]['rating'] = 2
@@ -145,7 +145,21 @@ def set_allow_answers():
 def get_active_question():
     question = next((q for q in quiz_data['questions'] if q['id'] == active_question_id), None)
     if question:
-        return render_template('question.html', question=question, allow_answers=allow_answers)
+        # Provide last entered answers for the current team (if any)
+        team = session.get('team')
+        last_answers = []
+        for idx, sq in enumerate(question['subquestions']):
+            ans = answers_data[active_question_id][team][idx]['answer']
+            # Format time answers as HH:MM:SS for display in input[type=time]
+            if ans is not None and question['type'] == 'time':
+                # ans is seconds
+                h = int(ans) // 3600
+                m = (int(ans) % 3600) // 60
+                s = int(ans) % 60
+                last_answers.append(f"{h:02}:{m:02}:{s:02}")
+            else:
+                last_answers.append(ans)
+        return render_template('question.html', question=question, allow_answers=allow_answers, last_answers=last_answers)
     else:
         return ('Question not found', 404)
 
