@@ -28,7 +28,7 @@ for question in quiz_data['questions']:
         answers_data[question['id']] = {team: {sqid: {'answer': None, 'rating': 0} for sqid in range(len(question['subquestions']))} for team in config['teams'].keys()}
 
 active_question_id = 1
-allow_answers = True  # Fixed typo from allow_ansers
+allow_answers = False
 ws_clients = []
 
 def send_to_all_clients(message):
